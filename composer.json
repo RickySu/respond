@@ -1,0 +1,23 @@
+{
+    "name": "respond/respond",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ricky Su",
+            "email": "ricky@ez2.us"
+        }
+    ],
+    "repositories": [{
+            "type": "vcs",
+            "url": "/home/ricky/php/php-webutil"
+        }],
+    "require": {
+        "evenement/evenement": "1.x",
+        "rickysu/webutil": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Respond\\": "src"
+        }
+    }
+}
