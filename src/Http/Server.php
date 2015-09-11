@@ -27,6 +27,7 @@ class Server
                 $this->feedHttpParser($client, $data);
             });
             $client->on('write', function($client){
+                unset($client->parser);
                 $client->close();
             });
         });
@@ -47,9 +48,11 @@ class Server
 
     protected function initHttpParser($client)
     {
-        $parser = new Parser\RequestHeaderParser();
-        $parser->setNextHook(new Parser\RequestParamParser())
-            ->setNextHook(new Parser\RequestMultipartAsyncParser())
+//        $parser = new Parser\RequestHeaderParser();
+        $parser = new \WebUtil\Parser\HttpParser();
+        $parser
+  //          ->setNextHook(new Parser\RequestParamParser())
+            //->setNextHook(new Parser\RequestMultipartAsyncParser())
             ->setOnParsedCallback(function($data) use($client){
                 $request = ServerRequest::createFromArray($data, $this->serverPram);
                 $match = $this->route->match($request->getMethod(), $request->getUri()->getPath());

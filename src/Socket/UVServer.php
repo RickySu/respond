@@ -16,9 +16,9 @@ class UVServer extends EventEmitter implements ServerInterface
     public function getServerParam()
     {
         return array(
-            'https' => $this->isSSL,
-            'server-name' => $this->socket->getSockname(),
-            'server-port' => $this->socket->getSockport(),
+            'Https' => $this->isSSL,
+            'Server-Name' => $this->socket->getSockname(),
+            'Server-Port' => $this->socket->getSockport(),
         );
     }
 

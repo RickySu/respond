@@ -43,6 +43,7 @@ class UVSocket extends EventEmitter
     public function close()
     {
         $this->socket->close();
+        unset($this->socket);
         $this->removeAllListeners();
     }
 
