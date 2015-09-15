@@ -6,6 +6,7 @@ use Evenement\EventEmitter;
 class UVSocket extends EventEmitter
 {
     private $socket;
+    protected $shutdownAfterSend = false;
 
     public function __construct($socket)
     {
@@ -33,6 +34,25 @@ class UVSocket extends EventEmitter
                 ));
             }
         );
+    }
+
+    public function shutdown()
+    {
+        $this->socket->shutdown(function($socket){
+            $this->emit('shutdown', array(
+                $this
+            ));
+        });
+    }
+
+    public function reset()
+    {
+        $this->shutdownAfterSend = false;
+    }
+
+    public function isNeedShutdown()
+    {
+        return $this->shutdownAfterSend;
     }
 
     public function write($data)
