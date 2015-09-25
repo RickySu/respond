@@ -13,32 +13,27 @@ if (defined('HHVM_VERSION')) {
     $loader->setPsr4('WebUtil\\', $psr4Prefix['WebUtil\\']);
 }
 
-$server = include __DIR__.'/../test.php';
-$defaultConfig = [
-    'listen' => '0.0.0.0',
-    'port' => 8080,
-];
+$app = include $_SERVER['argv'][1];
 
-$config = isset($server['config'])?$server['config']:[];
+if(!($app instanceof \Respond\App\WebApp)){
+    die;
+}
 
-$config = array_merge($defaultConfig, $config);
+if(!($loop = $app->getLoop())){
+    $loop = new \UVLoop();
+    $app->setLoop($loop);
+}
 
-$loop = isset($config['loop'])?$config['loop']:new \UVLoop();
-
-$socket = isset($config['socket'])?$config['socket']:new Socket\UVServer($loop);
-
-$socket->listen($config['listen'], $config['port']);
+$socket = new Socket\UVServer($loop);
+$socket->listen($app->getHost(), $app->getPort());
 
 $httpServer = new Http\Server($socket);
 
-foreach($server['app'] as $route)
+foreach($app->getRoutes() as $route)
 {
-    if($route[0] != 'ANY'){
-        $httpServer->match($route[0], $route[1], $route[2]);
-    }
-    else{
-        $httpServer->any($route[1]);
-    }
+    $httpServer->match($route[0], $route[1], $route[2]);
 }
+
+$httpServer->any($app->getDefautCallback());
 
 $loop->run();
